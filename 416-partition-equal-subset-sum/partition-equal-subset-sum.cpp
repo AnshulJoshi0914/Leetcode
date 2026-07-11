@@ -11,35 +11,42 @@ public:
     //     }
     //     return dp[ind][target]=take||notake;
     // }
-
+    
     bool canPartition(vector<int>& nums) {
         int n = nums.size();
         int totalsum = 0;
-        for (int i = 0; i < n; i++) {
+
+        for (int i = 0; i < n; i++)
             totalsum += nums[i];
-        }
-        if (totalsum % 2 == 1) {
+
+        if (totalsum % 2)
             return false;
-        }
+
         int targetsum = totalsum / 2;
-        vector<vector<bool>> dp(n,vector<bool>(targetsum+1,false));
-        for(int i=0;i<n;i++){
-            dp[i][0] = true;
-        }
-        if(nums[0]<targetsum){
-            dp[0][nums[0]] = true;
+
+        vector<bool> prev(targetsum + 1, false);
+        prev[0] = true;
+
+        if (nums[0] <= targetsum)
+            prev[nums[0]] = true;
+
+        for (int index = 1; index < n; index++) {
+            vector<bool> curr(targetsum + 1, false);
+            curr[0] = true;
+
+            for (int target = 1; target <= targetsum; target++) {
+                bool notTake = prev[target];
+
+                bool take = false;
+                if (nums[index] <= target)
+                    take = prev[target - nums[index]];
+
+                curr[target] = take || notTake;
+            }
+
+            prev = curr;
         }
 
-        for(int index=1;index<n;index++){
-            for (int target = 1; target <= targetsum; target++) {
-                bool take = dp[index-1][target];
-                bool notake = false;
-                if (target >= nums[index]) {
-                    notake = dp[index-1][target-nums[index]];
-                }
-                dp[index][target] = take || notake;
-            }
-        }
-        return dp[n-1][targetsum];
+        return prev[targetsum];
     }
 };
