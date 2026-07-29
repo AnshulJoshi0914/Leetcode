@@ -8,7 +8,7 @@ public:
         //     if(s!=t)return false;
         // }
         // return true;
-        int ans[26]={0};
+        vector<int>ans(26,0);
         for(int i=0;i<s.size();i++){
             ans[s[i]-'a']++;
             ans[t[i]-'a']--;
